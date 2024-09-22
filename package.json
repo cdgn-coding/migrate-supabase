@@ -2,7 +2,7 @@
   "name": "migrate-supabase",
   "version": "1.0.0",
   "description": "Script to migrate Supabase project to self-hosted instance",
-  "main": "migrate-supabase.js",
+  "main": "main.js",
   "scripts": {
     "migrate": "node --env-file .env main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@supabase/supabase-js": "^2.21.0",
-    "dotenv": "^16.0.3"
+    "@supabase/supabase-js": "^2.21.0"
+  },
+  "engines": {
+    "node": ">=20.6.0"
   }
 }
