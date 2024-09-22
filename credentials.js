@@ -1,0 +1,8 @@
+module.exports = {
+  OLD_DB_URL: process.env.OLD_DB_URL,
+  NEW_DB_URL: process.env.NEW_DB_URL,
+  OLD_PROJECT_URL: process.env.OLD_PROJECT_URL,
+  OLD_PROJECT_SERVICE_KEY: process.env.OLD_PROJECT_SERVICE_KEY,
+  NEW_PROJECT_URL: process.env.NEW_PROJECT_URL,
+  NEW_PROJECT_SERVICE_KEY: process.env.NEW_PROJECT_SERVICE_KEY,
+}
