@@ -7,11 +7,15 @@
     "migrate": "node --env-file .env main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["supabase", "migration"],
+  "keywords": [
+    "supabase",
+    "migration"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@supabase/supabase-js": "^2.21.0"
+    "@supabase/supabase-js": "^2.21.0",
+    "pg": "^8.13.0"
   },
   "engines": {
     "node": ">=20.6.0"

@@ -180,13 +180,67 @@ async function migratePgsodiumKey() {
   }
 }
 
+const { Pool } = require('pg');
+
+async function migrateVaultSecrets() {
+  console.log("Migrating Vault secrets...");
+
+  const oldPool = new Pool({ connectionString: OLD_DB_URL });
+  const newPool = new Pool({ connectionString: NEW_DB_URL });
+
+  try {
+    // Connect to both databases
+    const oldClient = await oldPool.connect();
+    const newClient = await newPool.connect();
+
+    try {
+      // Fetch all secrets from the old database
+      const { rows: oldSecrets } = await oldClient.query(`
+        SELECT * FROM vault.decrypted_secrets;
+      `);
+
+      console.log(`Found ${oldSecrets.length} secrets to migrate.`);
+
+      for (const secret of oldSecrets) {
+        console.log(`Migrating secret: ${secret.name}`);
+
+        // Insert the secret into the new database
+        await newClient.query(`
+          select vault.create_secret($1, $2, $3)
+        `, [
+          secret.decrypted_secret,
+          secret.name,
+          secret.description,
+        ]);
+
+        console.log(`Secret ${secret.name} migrated successfully.`);
+      }
+
+      console.log("All Vault secrets migrated successfully!");
+    } finally {
+      // Release the database connections
+      oldClient.release();
+      newClient.release();
+    }
+  } catch (error) {
+    console.error("Error migrating Vault secrets:", error);
+    throw error;
+  } finally {
+    // Close the connection pools
+    await oldPool.end();
+    await newPool.end();
+  }
+}
+
 async function main() {
   try {
     await backupDatabase();
-    await migratePgsodiumKey();
+    // Only uncomment if you need to migrate the roles and users
+    // await migratePgsodiumKey();
     await restoreDatabase();
     await preserveMigrationHistory();
     await migrateStorageObjects();
+    await migrateVaultSecrets();
         
     console.log("Migration completed successfully!");
     console.log("Please remember to:");
@@ -196,6 +250,7 @@ async function main() {
     console.log("4. Enable publication on tables for Realtime functionality");
     console.log("5. Verify and reconfigure webhooks and triggers");
     console.log("6. Test thoroughly to ensure all data and functionality has been correctly migrated");
+    console.log("7. Verify that all Vault secrets have been correctly migrated");
   } catch (error) {
     console.error("An error occurred during migration:", error);
   }

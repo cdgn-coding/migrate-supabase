@@ -246,6 +246,9 @@ services:
       - 'GOTRUE_MAILER_SUBJECTS_INVITE=${MAILER_SUBJECTS_INVITE}'
       - 'GOTRUE_EXTERNAL_PHONE_ENABLED=${ENABLE_PHONE_SIGNUP:-true}'
       - 'GOTRUE_SMS_AUTOCONFIRM=${ENABLE_PHONE_AUTOCONFIRM:-true}'
+      - GOTRUE_HOOK_CUSTOM_ACCESS_TOKEN_ENABLED: "true"
+      - GOTRUE_HOOK_CUSTOM_ACCESS_TOKEN_URI: "pg-functions://postgres/public/custom_access_token_hook"
+      # - GOTRUE_HOOK_CUSTOM_ACCESS_TOKEN_SECRETS: "<standard-base64-secret>"
   realtime-dev:
     image: 'supabase/realtime:v2.30.23'
     container_name: realtime-dev.supabase-realtime
